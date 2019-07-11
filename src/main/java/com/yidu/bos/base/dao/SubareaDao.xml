@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.yidu.bos.base.dao.SubareaDao">
+  
+  	<!-- 查询所有 -->
+  	<select id="findAllSubarea" resultType="subarea">
+  		select * from t_subarea where useable='y'
+  	</select>
+  	
+  	<!-- 根据Id查询分区 -->
+  	<select id="findSubareaById" resultType="subarea" parameterType="string">
+  		select * from t_subarea where subareaId=#{subareaId} and useable='y'
+  	</select>
+  	
+  	<!-- 模糊查询 -->
+  	<select id="blurruSelSubarea" parameterType="hashmap" resultType="subarea">
+  		select * from t_subarea
+  		<trim prefix="where" suffixOverrides="and">
+  			<if test="bluQuerySubarea!=null">
+	  			<bind name="subarea" value="'%'+subarea+'%'"/>
+	  			subarea like #{subarea} and
+	  		</if>
+	  		<if test="bluQueryProvince!=null">
+	  			<bind name="province" value="'%'+province+'%'"/>
+	  			province like #{province} and
+	  		</if>
+	  		<if test="bluQueryCity!=null">
+	  			<bind name="city" value="'%'+city+'%'"/>
+	  			city like #{city} and
+	  		</if>
+  		 
+  		</trim>
+  		
+  	</select>
+  	<!-- <select id="blurruSelSubarea" parameterType="java.util.Arrays" resultType="subarea">
+  		select * from t_subarea
+  		
+  		<foreach collection="array" item="arr" index="no" open="("
+			separator="," close=")">
+			#{arr}
+		</foreach>
+  		
+  		<trim prefix="where" suffixOverrides="and">
+  			<if test="subarea!=null">
+	  			<bind name="subarea" value="'%'+subarea+'%'"/>
+	  			subarea like #{subarea} and
+	  		</if>
+	  		<if test="province!=null">
+	  			<bind name="province" value="'%'+province+'%'"/>
+	  			province like #{province} and
+	  		</if>
+	  		<if test="city!=null">
+	  			<bind name="city" value="'%'+city+'%'"/>
+	  			city like #{city} and
+	  		</if>
+  		</trim>
+  	</select> -->
+  
+  	<!-- 添加分区 -->
+  	<insert id="addSubarea" parameterType="subarea">
+  		insert into t_subarea(subareaId,sortCode,subarea,position,areaId,province,city,county,setAreaId,setArea,keyword,startNo,endNo,oddEvenNo,auxColumn,useable,sacDesc) 
+	  		values(
+	  		#{subareaId},#{sortCode},#{subarea},#{position},#{areaId},
+	  		#{province},#{city},#{county},#{setAreaId},#{setArea},#{keyword},#{startNo},#{endNo},
+	  		#{oddEvenNo},#{auxColumn},#{useable},#{sacDesc}
+  		);
+  	</insert>
+  	
+  	<!-- 逻辑删除分区 -->
+  	<update id="deleteSubarea" parameterType="string">
+  		update t_subarea set useable='n' where subareaId=#{subareaId}
+  	</update>
+  	
+  	<!-- 批量逻辑删除分区 -->
+  	<update id="deleteSubareas" parameterType="java.util.Arrays">
+  		<!-- delete from emp where empno in(7789,7790) -->
+		<!-- forEach : 用来循环  collection : 用来指定循环的数据的类型 可以填的值有：array,list,map 
+		item: 循环中为每个循环的数据指定一个别名 index : 循环中循环的下标  open : 开始  close : 结束  separator : 数组中元素之间的分隔符 -->
+		update t_subarea set useable='n' where subareaId in
+		<foreach collection="array" item="arr" index="no" open="("
+			separator="," close=")">
+			#{arr}
+		</foreach>
+  	</update>
+  	
+  	<!-- 修改分区 -->
+  	<update id="updateSubarea" parameterType="subarea">
+  		update t_subarea 
+  		<trim prefix="set" suffixOverrides=",">
+  		<!-- <set> -->
+  			<if test="sortCode!=null">sortCode=#{sortCode},</if>
+  			<if test="subarea!=null">subarea=#{subarea},</if>
+  			<if test="position!=null">position=#{position},</if>
+  			<if test="areaId!=null">areaId=#{areaId},</if>
+  			<if test="province!=null">province=#{province},</if>
+  			<if test="city!=null">city=#{city},</if>
+  			<if test="county!=null">county=#{county},</if>
+  			<if test="setAreaId!=null">setAreaId=#{setAreaId},</if>
+  			<if test="setArea!=null">setArea=#{setArea},</if>
+  			<if test="keyword!=null">keyword=#{keyword},</if>
+  			<if test="startNo!=null">startNo=#{startNo},</if>
+  			<if test="endNo!=null">endNo=#{endNo},</if>
+  			<if test="oddEvenNo!=null">oddEvenNo=#{oddEvenNo},</if>
+  			<if test="auxColumn!=null">auxColumn=#{auxColumn},</if>
+  			<if test="useable!=null">useable=#{useable},</if>
+  			<if test="sacDesc!=null">sacDesc=#{sacDesc},</if>
+  		<!-- </set> -->
+  		</trim>
+  		where subareaId=#{subareaId}
+  	</update>
+  	
+  	<!-- <select id="selByIdName" resultType="subarea">
+  		select * from t_subarea where 1=1
+  		<if test="subareaId!=null">
+  			and subareaId=#{subareaId}
+  		</if>
+  		<if test="subarea!=null">
+  			or subarea=#{subarea}
+  		</if>
+  	</select> -->
+  	
+  	<!-- <select id="selByIdName" resultType="subarea">
+  		select * from t_subarea
+  		<where>
+	  		<if test="subareaId!=null">
+	  			and subareaId=#{subareaId}
+	  		</if>
+	  		<if test="subarea!=null">
+	  			or subarea=#{subarea}
+	  		</if>
+  		</where>
+  	</select> -->
+  	 
+  	<select id="selByIdName" resultType="subarea">
+  	<!-- <bind name="uname" value="'%'+username+'%'"/> -->
+  		select * from t_subarea
+  		<trim prefix="where" prefixOverrides="and" >
+  		
+  		<!-- <where> -->
+	  			<if test="subareaId!=null">
+		  			and subareaId=#{subareaId}
+		  		</if>
+		  		<if test="subarea!=null">
+		  			or subarea=#{subarea}
+		  		</if>
+  		<!-- </where> -->
+  		</trim>
+  	</select>
+  	
+  </mapper>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

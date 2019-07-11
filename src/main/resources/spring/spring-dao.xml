@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+        http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.3.xsd ">
+		
+	<!-- 读取属性文件 -->
+	<context:property-placeholder location="classpath:db.properties"/>
+	<context:component-scan base-package="com.yidu.base.dao"></context:component-scan>
+		
+	<!-- c3p0配置数据源 -->		
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${mysql.driver}"></property>
+		<property name="jdbcUrl" value="${mysql.url}"></property>
+		<property name="user" value="${mysql.testd269.username}"></property>
+		<property name="password" value="${mysql.testd269.password}"></property>
+	</bean>	
+	
+	<!--配置一个可以进行批量操作的SqlSession  哪个biz的方法需要批量操作，
+                  在实现类关联一个SqlSession getMapper()就可以批量操作了-->
+     <!-- <bean id="SqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+     	<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+     	<constructor-arg name="executorType" value="BATCH"></constructor-arg>
+     </bean> -->
+	
+	<!-- 配置sqlSessionFactoryBean -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 配置依赖属性:数据源 -->
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 配置依赖属性:mybatis主配置文件路径 -->
+		<property name="configLocation" value="classpath:mybatis/SqlMapConfig.xml"></property>
+	</bean>
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 配置依赖属性 -->
+		<property name="basePackage" value="com.yidu.bos.base.dao"></property>
+		<!-- 配置依赖属性：会话工厂 -->
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+	
+	
+	
+</beans>
