@@ -18,13 +18,13 @@ public class Msg {
 		msg.setMsg("成功");
 		return msg;
 	}
-	//成功调用的方法
-		public static Msg fail(){
-			Msg msg=new Msg();
-			msg.setCode(200);
-			msg.setMsg("失败");
-			return msg;
-		}
+	//调用失败的方法
+	public static Msg fail(){
+		Msg msg=new Msg();
+		msg.setCode(200);
+		msg.setMsg("失败");
+		return msg;
+	}
 		
 	   public Msg add(String key,Object value){
 			this.getMap().put(key, value);
